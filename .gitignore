@@ -1,3 +1,11 @@
-/target/
-/riddler/target/
-/.idea/
+target/
+**/target/
+.idea/
+*.iml
+.vscode/
+.env
+/data/
+*.log
+.DS_Store
+
+.env

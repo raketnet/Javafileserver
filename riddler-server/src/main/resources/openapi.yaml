@@ -1,0 +1,54 @@
+openapi: 3.0.3
+info:
+  title: Riddler File Server API
+  version: 3.0.0
+  description: Framework-free Java 21 file storage service.
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200': {description: Healthy}
+  /api/v1/files:
+    get:
+      summary: List file metadata
+      parameters:
+        - {name: limit, in: query, schema: {type: integer, default: 50, maximum: 100}}
+        - {name: offset, in: query, schema: {type: integer, default: 0}}
+      responses:
+        '200': {description: File metadata list}
+    post:
+      summary: Upload a file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: {type: string, format: binary}
+      responses:
+        '201': {description: Created}
+        '400': {description: Invalid upload}
+  /api/v1/files/{id}:
+    parameters:
+      - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      summary: Download a file
+      responses:
+        '200': {description: Binary file content, content: {application/octet-stream: {schema: {type: string, format: binary}}}}
+        '404': {description: Not found}
+    delete:
+      summary: Delete a file
+      responses:
+        '204': {description: Deleted}
+        '404': {description: Not found}
+  /api/v1/files/{id}/metadata:
+    get:
+      summary: Get file metadata
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        '200': {description: Metadata}
+        '404': {description: Not found}
